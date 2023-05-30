@@ -1,7 +1,7 @@
 package lam.ss7.formatter;
 
 import lam.ss7.model.entity.Catalog;
-import lam.ss7.model.service.catalog.ICatalogService;
+import lam.ss7.service.catalog.ICatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;

@@ -2,9 +2,12 @@ package lam.ss7.controller;
 
 import lam.ss7.model.entity.Blog;
 import lam.ss7.model.entity.Catalog;
-import lam.ss7.model.service.blog.IBlogService;
-import lam.ss7.model.service.catalog.ICatalogService;
+import lam.ss7.service.blog.IBlogService;
+import lam.ss7.service.catalog.ICatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +27,8 @@ public class BlogController {
     }
 
     @GetMapping({"showList", ""})
-    public ModelAndView getList(Model model) {
-        Iterable<Blog> blogs = blogService.findAll();
+    public ModelAndView getList(Model model,@PageableDefault(sort = "title",size = 3) Pageable pageable) {
+        Page<Blog> blogs = blogService.findAll(pageable);
         ModelAndView modelAndView = new ModelAndView("/blog/blog");
         modelAndView.addObject("blog", blogs);
         return modelAndView;
@@ -63,6 +66,18 @@ public class BlogController {
     @GetMapping("/show/{id}")
     public ModelAndView showDetail(@PathVariable("id") Long id) {
         return new ModelAndView("/blog/blogDetail", "blog", blogService.findById(id).get());
+    }
+    @GetMapping("/search")
+    public ModelAndView searchProduct(@RequestParam("search") String search, Pageable pageable){
+        Page<Blog> blogPage;
+        if(!search.trim().equals("")){
+            blogPage = blogService.findByTitleBlog(search,pageable);
+        } else {
+            blogPage = blogService.findAll(pageable);
+        }
+        ModelAndView modelAndView = new ModelAndView("/blog/blog");
+        modelAndView.addObject("blog",blogPage);
+        return modelAndView;
     }
 
 

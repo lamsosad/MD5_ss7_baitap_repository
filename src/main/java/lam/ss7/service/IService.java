@@ -1,4 +1,4 @@
-package lam.ss7.model.service;
+package lam.ss7.service;
 
 import java.util.Optional;
 

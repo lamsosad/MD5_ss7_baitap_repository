@@ -1,8 +1,10 @@
-package lam.ss7.model.service.blog;
+package lam.ss7.service.blog;
 
 import lam.ss7.model.entity.Blog;
-import lam.ss7.model.repository.IBlogRepository;
+import lam.ss7.repository.IBlogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -18,6 +20,7 @@ public class BlogServiceIMPL implements IBlogService {
         return blogRepository.findAll();
     }
 
+
     @Override
     public Optional findById(Long id) {
         return blogRepository.findById(id);
@@ -32,5 +35,20 @@ public class BlogServiceIMPL implements IBlogService {
     @Override
     public void remove(Long id) {
         blogRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Blog> findAll(Pageable pageable) {
+        return blogRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Blog> findAllByTitleContaining(String title, Pageable pageable) {
+        return blogRepository.findAllByTitleContaining(title,pageable);
+    }
+
+    @Override
+    public Page<Blog> findByTitleBlog(String title, Pageable pageable) {
+        return blogRepository.findByTitleBlog(title,pageable);
     }
 }

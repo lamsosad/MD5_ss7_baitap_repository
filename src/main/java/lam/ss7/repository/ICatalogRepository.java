@@ -1,4 +1,4 @@
-package lam.ss7.model.repository;
+package lam.ss7.repository;
 
 import lam.ss7.model.entity.Catalog;
 import org.springframework.data.repository.PagingAndSortingRepository;

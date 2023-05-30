@@ -5,7 +5,7 @@
     <title>Blog</title>
 </head>
 <style>
-    th,td{
+    th, td {
         padding: 10px;
     }
 </style>
@@ -13,6 +13,10 @@
 <a th:href="@{/add}">Create new Blog</a><br>
 <a th:href="@{/catalogController/showAll}">Catalog List</a>
 <h1>List Blog</h1>
+<form action="/search" method="get">
+    <input type="text" name="search">
+    <input type="submit" value="search">
+</form>
 <table border="1">
     <tr>
         <th>ID</th>
@@ -23,11 +27,22 @@
         <tr>
             <td th:text="${b.id}"></td>
             <td th:text="${b.title}"></td>
-            <td><a th:href="@{|/show/${b.id}|}"><button style="background-color: green">Show</button></a></td>
-            <td><a th:href="@{|/edit/${b.id}|}"><button style="background-color: orange">Edit</button></a></td>
-            <td><a th:href="@{|/delete/${b.id}|}"><button style="background-color: red">Delete</button></a></td>
+            <td><a th:href="@{|/show/${b.id}|}">
+                <button style="background-color: green">Show</button>
+            </a></td>
+            <td><a th:href="@{|/edit/${b.id}|}">
+                <button style="background-color: orange">Edit</button>
+            </a></td>
+            <td><a th:href="@{|/delete/${b.id}|}">
+                <button style="background-color: red">Delete</button>
+            </a></td>
         </tr>
     </th:block>
 </table>
+<div>
+    <a th:if="${blog.hasPrevious()}" th:href="@{|/?page=${blog.number -1}|}">Previous</a>
+    <span th:text="${blog.number + 1}"></span>/<span th:text="${blog.getTotalPages()}"></span>
+    <a th:if="${blog.hasNext()}" th:href="@{|/?page=${blog.number +1}|}">Next</a>
+</div>
 </body>
 </html>

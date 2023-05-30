@@ -1,7 +1,7 @@
-package lam.ss7.model.service.catalog;
+package lam.ss7.service.catalog;
 
 import lam.ss7.model.entity.Catalog;
-import lam.ss7.model.repository.ICatalogRepository;
+import lam.ss7.repository.ICatalogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

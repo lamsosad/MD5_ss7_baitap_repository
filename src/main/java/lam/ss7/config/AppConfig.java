@@ -1,10 +1,10 @@
 package lam.ss7.config;
 
 import lam.ss7.formatter.CatalogFormatter;
-import lam.ss7.model.service.blog.BlogServiceIMPL;
-import lam.ss7.model.service.blog.IBlogService;
-import lam.ss7.model.service.catalog.CatalogServiceIMPL;
-import lam.ss7.model.service.catalog.ICatalogService;
+import lam.ss7.service.blog.BlogServiceIMPL;
+import lam.ss7.service.blog.IBlogService;
+import lam.ss7.service.catalog.CatalogServiceIMPL;
+import lam.ss7.service.catalog.ICatalogService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +39,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @EnableSpringDataWebSupport
 @ComponentScan("lam.ss7.controller")
-@EnableJpaRepositories("lam.ss7.model.repository")
+@EnableJpaRepositories("lam.ss7.repository")
 public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
 
