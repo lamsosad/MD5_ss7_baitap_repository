@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Catalog</title>
+</head>
+<body>
+<h1>Create Catalog</h1>
+<p>
+  <a href="/catalogController/showAll">Home</a>
+</p>
+<form th:action="@{/catalogController/create}" th:object="${catalog}" method="post">
+  <table>
+    <tr>
+      <td>Name Catalog:</td>
+      <td><input type="text" th:field="*{name}"/></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input type="submit" value="Create Blog"></td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

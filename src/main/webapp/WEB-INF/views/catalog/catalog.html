@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catalog</title>
+</head>
+<style>
+    th,td{
+        padding: 10px;
+    }
+</style>
+<body>
+<a href="/catalogController/addCatalog">Create new Catalog</a><br>
+<a href="/showList">List Blog</a>
+<h1>List Catalog</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name Catalog</th>
+        <th colspan="2">Action</th>
+    </tr>
+    <th:block th:each="c : ${catalog}">
+        <tr>
+            <td th:text="${c.id}"></td>
+            <td th:text="${c.name}"></td>
+            <td><a th:href="@{|/catalogController/edit/${c.id}|}"><button style="background-color: orange">Edit</button></a></td>
+            <td><a th:href="@{|/catalogController/deleteCatalog/${c.id}|}"><button style="background-color: red">Delete</button></a></td>
+        </tr>
+    </th:block>
+</table>
+</body>
+</html>
