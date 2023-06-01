@@ -23,8 +23,8 @@ public class CatalogServiceIMPL implements ICatalogService {
     }
 
     @Override
-    public void save(Catalog catalog) {
-        catalogRepository.save(catalog);
+    public Catalog save(Catalog catalog) {
+        return catalogRepository.save(catalog);
     }
 
     @Override
