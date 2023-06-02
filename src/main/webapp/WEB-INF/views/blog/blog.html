@@ -1,49 +1,225 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
 </head>
-<style>
-    th, td {
-        padding: 10px;
-    }
-</style>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+
+        function deleteBlog(id) {
+            $.ajax({
+                url: 'http://localhost:8080/api/blogController/' + id,
+                method: 'DELETE',
+                success: function () {
+                    console.log('record has been deleted');
+                    getAllBlog();
+                },
+
+            })
+        }
+
+        function updateBlog(id) {
+            $("#create").show();
+            $.ajax({
+                url: 'http://localhost:8080/api/blogController/' + id,
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#title').val(data.title);
+                    $('#content').val(data.content);
+                    $('#catalog').val(data.catalog.id);
+                    $('#id').val(data.id);
+                    getAllBlog();
+                },
+
+            })
+        }
+
+        var action = null;
+
+        function getAllBlog() {
+            $.ajax({
+                url: "http://localhost:8080/api/blogController?action=" + action,
+                method: "GET",
+                dataType: "json",
+
+                success: function (data) {
+                    var blogTable = $('#blogTable tbody');
+                    blogTable.empty();
+                    $(data).each(function (index, element) {
+                        blogTable.append('<tr><td>' +
+                            element.id + '</td><td>' +
+                            element.title + '</td><td>' +
+                            element.content + '</td><td>' +
+                            element.catalog?.name + '</td><td>' +
+                            `<button onclick = "updateBlog(${element.id})">Update</button> | ` +
+                            `<button onclick = "deleteBlog(${element.id})">Delete</button></td></tr>`);
+                    })
+                },
+            })
+
+        }
+
+
+        function getAllCatalog() {
+            $.ajax({
+                url: "http://localhost:8080/api/catalogController",
+                method: "GET",
+                dataType: "json",
+
+                success: function (data) {
+                    var blogTable = $('#catalog');
+                    blogTable.empty();
+                    $(data).each(function (index, element) {
+                        blogTable.append(`<option value=${element.id}>${element.name}</option>`);
+                    })
+                },
+
+            })
+        }
+
+        function searchTitleBlog() {
+            var name = $('#search').val();
+            $.ajax({
+                url: 'http://localhost:8080/api/blogController/search?search=' + name,
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var blogTable = $('#blogTable tbody');
+                    blogTable.empty();
+                    $(data).each(function (index, element) {
+                        blogTable.append('<tr><td>' +
+                            element.id + '</td><td>' +
+                            element.title + '</td><td>' +
+                            element.content + '</td><td>' +
+                            element.catalog.name + '</td><td>' +
+                            `<button onclick = "updateBlog(${element.id})">Update</button> | ` +
+                            `<button onclick = "deleteBlog(${element.id})">Delete</button></td></tr>`);
+                    })
+                },
+            })
+        }
+
+        $(document).ready(function () {
+            var blog = {};
+            var dynamicURL = "";
+            var methodName = "";
+            getAllBlog()
+            getAllCatalog()
+            $('#btnAddBook').click(function () {
+                blog.title = $('#title').val();
+                blog.content = $('#content').val();
+                blog.catalog = {id: $('#catalog').val()}
+                var id = $('#id').val();
+                if (id) {
+                    //update it
+                    dynamicURL = "http://localhost:8080/api/blogController/" + id;
+                    methodName = "PUT";
+                } else {
+                    //save itblog
+                    dynamicURL = "http://localhost:8080/api/blogController";
+                    methodName = "POST";
+                }
+                console.log(blog)
+                var bookObj = JSON.stringify(blog);
+                console.log(bookObj)
+                $.ajax({
+                    url: dynamicURL,
+                    method: methodName,
+                    data: bookObj,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function () {
+                        console.log('Saved successfully');
+                        $("#create").hide();
+                        getAllBlog();
+                        reset();
+                    },
+
+                })
+            })
+            $('#showAll').click(function () {
+                action = "all";
+                getAllBlog();
+            })
+            $('#show').click(function () {
+                action = null;
+                getAllBlog();
+            })
+
+
+            function reset() {
+                $('#title').val('');
+                $('#content').val('');
+                $('#catalog').val('');
+                $('#id').val('');
+            }
+
+            $("#create").hide();
+            $("#hide").click(function () {
+                $("#create").show();
+            });
+        })
+    </script>
+</head>
+
 <body>
-<a th:href="@{/add}">Create new Blog</a><br>
-<a th:href="@{/catalogController/showAll}">Catalog List</a>
-<h1>List Blog</h1>
-<form action="/search" method="get">
-    <input type="text" name="search">
-    <input type="submit" value="search">
-</form>
-<br>
-<table border="1">
+<h1>Create Blog</h1>
+<button id="hide">Create Blog</button>
+<table id="create">
+    <td><input type="text" id="id" hidden></td>
+
     <tr>
-        <th>ID</th>
-        <th>Name Blog</th>
-        <th colspan="3">Action</th>
+        <td>Title</td>
+        <td><input type="text" id="title"></td>
     </tr>
-    <th:block th:each="b : ${blog}">
-        <tr>
-            <td th:text="${b.id}"></td>
-            <td th:text="${b.title}"></td>
-            <td><a th:href="@{|/show/${b.id}|}">
-                <button style="background-color: green">Show</button>
-            </a></td>
-            <td><a th:href="@{|/edit/${b.id}|}">
-                <button style="background-color: orange">Edit</button>
-            </a></td>
-            <td><a th:href="@{|/delete/${b.id}|}">
-                <button style="background-color: red">Delete</button>
-            </a></td>
-        </tr>
-    </th:block>
+    <tr>
+        <td>Content</td>
+        <td><input type="text" id="content"></td>
+    </tr>
+    <tr>
+        <td>Catalog</td>
+        <td>
+            <select id="catalog">
+            </select>
+        </td>
+    </tr>
+    <tr colspan="2">
+        <td><input type="button" value="Add or EDIT" id="btnAddBook"></td>
+    </tr>
+</table>
+<br><br>
+<div>
+    <h1>Search Blog by Title</h1>
+    <input type="text" id="search">
+    <button onclick="searchTitleBlog()">Search</button>
+</div>
+<br><br>
+<h1>List Blog</h1>
+<table border="1" id="blogTable">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Content</th>
+        <th>Catalog</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
 </table>
 <div>
-    <a th:if="${blog.hasPrevious()}" th:href="@{|/?page=${blog.number -1}|}">Previous</a>
-    <span th:text="${blog.number + 1}"></span>/<span th:text="${blog.getTotalPages()}"></span>
-    <a th:if="${blog.hasNext()}" th:href="@{|/?page=${blog.number +1}|}">Next</a>
+    <button id="showAll">Xem tất cả</button>
+    <button id="show">Thu gọn</button>
 </div>
 </body>
+
 </html>

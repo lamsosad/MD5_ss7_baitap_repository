@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,7 +49,12 @@ public class BlogServiceIMPL implements IBlogService {
     }
 
     @Override
-    public Page<Blog> findByTitleBlog(String title, Pageable pageable) {
-        return blogRepository.findByTitleBlog(title,pageable);
+    public Optional<Blog> findByTitleBlog(String title) {
+        return blogRepository.findByTitleBlog(title);
+    }
+
+    @Override
+    public Iterable<Blog> showOverView() {
+        return blogRepository.showOverView();
     }
 }

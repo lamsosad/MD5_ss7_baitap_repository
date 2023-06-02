@@ -1,8 +1,10 @@
 package lam.ss7.service.catalog;
 
+import lam.ss7.model.entity.Blog;
 import lam.ss7.model.entity.Catalog;
 import lam.ss7.repository.ICatalogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -31,4 +33,5 @@ public class CatalogServiceIMPL implements ICatalogService {
     public void remove(Long id) {
         catalogRepository.deleteById(id);
     }
+
 }

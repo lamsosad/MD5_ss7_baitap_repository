@@ -5,21 +5,21 @@ import lam.ss7.model.entity.Catalog;
 import lam.ss7.service.blog.IBlogService;
 import lam.ss7.service.catalog.ICatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/blogController")
+@CrossOrigin("*")
 public class BlogController {
     @Autowired
     private IBlogService blogService;
@@ -32,15 +32,27 @@ public class BlogController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Blog>> getList() {
-        List<Blog> blogs = (List<Blog>) blogService.findAll();
+    public ResponseEntity<Iterable<Blog>> getList(@RequestParam("action") String action) {
+        List<Blog> blogs;
+        if (action.equals("all")){
+            blogs = (List<Blog>) blogService.findAll();
+        }else {
+            blogs = (List<Blog>) blogService.showOverView();
+        }
         if (blogs.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(blogs, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping({"/show","/"})
+    public ModelAndView showBlog() {
+        ModelAndView modelAndView = new ModelAndView("/blog/blog");
+        modelAndView.addObject("blog", blogService.findAll());
+        return modelAndView;
+    }
+
+    @GetMapping("{id}")
     public ResponseEntity<Blog> findBlogById(@PathVariable Long id) {
         Optional<Blog> blogOptional = blogService.findById(id);
         if (!blogOptional.isPresent()) {
@@ -110,7 +122,7 @@ public class BlogController {
         return new ResponseEntity<>(blogService.save(blog), HttpStatus.OK);
     }
 
-//    @GetMapping("/show/{id}")
+    //    @GetMapping("/show/{id}")
 //    public ModelAndView showDetail(@PathVariable("id") Long id) {
 //        return new ModelAndView("/blog/blogDetail", "blog", blogService.findById(id).get());
 //    }
@@ -127,6 +139,13 @@ public class BlogController {
 //        modelAndView.addObject("blog", blogPage);
 //        return modelAndView;
 //    }
-
+    @GetMapping("/search")
+    public ResponseEntity<Blog> searchProduct(@RequestParam("search") String search) {
+        Optional<Blog> blogOptional = blogService.findByTitleBlog(search);
+        if (!blogOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(blogOptional.get(), HttpStatus.OK);
+    }
 
 }

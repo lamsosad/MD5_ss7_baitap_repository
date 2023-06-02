@@ -1,6 +1,6 @@
 package lam.ss7.config;
 
-import lam.ss7.formatter.CatalogFormatter;
+
 import lam.ss7.service.blog.BlogServiceIMPL;
 import lam.ss7.service.blog.IBlogService;
 import lam.ss7.service.catalog.CatalogServiceIMPL;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import org.springframework.format.FormatterRegistry;
+
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -38,7 +38,7 @@ import java.util.Properties;
 @EnableWebMvc
 @EnableTransactionManagement
 @EnableSpringDataWebSupport
-@ComponentScan("lam.ss7.controller")
+@ComponentScan("lam.ss7")
 @EnableJpaRepositories("lam.ss7.repository")
 public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
@@ -119,18 +119,4 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
         return properties;
     }
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addFormatter(new CatalogFormatter(applicationContext.getBean(CatalogServiceIMPL.class)));
-    }
-
-    @Bean
-    IBlogService blogService() {
-        return new BlogServiceIMPL();
-    }
-
-    @Bean
-    ICatalogService catalogService() {
-        return new CatalogServiceIMPL();
-    }
 }

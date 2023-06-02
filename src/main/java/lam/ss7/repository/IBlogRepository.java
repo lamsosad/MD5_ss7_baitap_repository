@@ -8,9 +8,15 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface IBlogRepository extends PagingAndSortingRepository<Blog, Long> {
     Page<Blog> findAllByTitleContaining(String title, Pageable pageable);
     @Query("SELECT b FROM Blog AS b WHERE b.title LIKE CONCAT('%',:title,'%')")
-    Page<Blog> findByTitleBlog(@Param("title") String title, Pageable pageable);
+    Optional<Blog> findByTitleBlog(@Param("title") String title);
+
+    @Query(nativeQuery = true, value = "select * from blog limit 5")
+    Iterable<Blog> showOverView();
 }
